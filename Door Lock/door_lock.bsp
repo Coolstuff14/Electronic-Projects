@@ -1,0 +1,50 @@
+' {$STAMP BS2p}
+' {$PBASIC 2.5}
+
+doorMagnet VAR IN0
+latchClosed VAR IN1
+latchOpen VAR IN2
+keypad VAR IN3
+motor PIN 4
+ledOpen PIN 5
+ledClose PIN 6
+
+'latchOpen = switch on back of lock (Normaly Open)
+'latchClosed = switch on door frame (Normaly closed)
+'doorMagnet = mag switch on door (Normaly Open)
+
+DO
+IF (doorMagnet = 0)THEN
+    IF (keypad = 0) THEN
+        GOSUB open
+    ELSEIF (latchOpen = 0)THEN
+        PAUSE 1000
+        GOSUB close
+    ENDIF
+ENDIF
+LOOP
+
+
+open:
+HIGH ledOpen
+DO UNTIL (latchOpen = 0 AND latchClosed = 0)
+  HIGH motor
+LOOP
+
+LOW motor
+PAUSE 5000
+LOW ledOpen
+RETURN
+
+
+
+close:
+HIGH ledClose
+DO UNTIL (latchOpen = 1 AND latchClosed = 1)
+  HIGH motor
+LOOP
+
+LOW motor
+PAUSE 5000
+LOW ledClose
+RETURN
